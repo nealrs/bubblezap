@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+<script src="glam.min.js" ></script>
+
+<title>Bubble Zap!</title>
+
+<style>
+	body{
+		margin: auto;
+		background-color: #000;
+	}
+
+	#container {
+		width:100%;
+		height:100%;
+		position:absolute;
+	}
+
+	.skybox {
+		/*Skybox from: http://www.redsorceress.com/skybox.html*/
+		cube-image-right:url(right.jpg);
+		cube-image-left:url(left.jpg);
+		cube-image-top:url(top.jpg);
+		cube-image-bottom:url(bottom.jpg);
+		cube-image-front:url(front.jpg);
+		cube-image-back:url(back.jpg);
+	}
+
+	.bubble {
+		radius:.5;
+		diffuse-color:lightgray;
+		vertex-shader:url(fresnel.vs);
+		fragment-shader:url(fresnel.fs);
+		shader-uniforms:mRefractionRatio f 1.02 mFresnelBias f 0.1 mFresnelPower f 2.0 mFresnelScale f 1.0 tCube t cube;
+	}
+
+	#gameInfo {
+		font-family: 'Roboto', sans-serif;
+		color:#FFF;
+		padding:0 1rem;
+	}
+
+	.info{
+		margin-right:2rem;
+	}
+
+	.win{
+		color: #2ECC40;
+	}
+
+	.lose{
+		color: #FF4136;
+	}
+
+	.hidden{
+		display:none;
+	}
+
+	.reset{
+		color:#FFDC00;
+		padding:4px 8px;
+		border: 1px solid #FFDC00;
+		cursor: pointer;
+		border-radius:4px;
+	}
+
+	a {
+		color:#FFDC00;
+	}
+
+	@-webkit-keyframes kfBB1 {
+	  0% {
+	    -webkit-transform: translateY(-6);
+	  }
+
+	  50% {
+	   -webkit-transform: translateY(0);
+	  }
+
+	  100% {
+	   -webkit-transform: translateY(6);
+	  }
+	}
+
+	@-webkit-keyframes kfBB2 {
+	  0% {
+	    -webkit-transform: translateY(0);
+	  }
+
+	  50% {
+	   -webkit-transform: translateY(2);
+	  }
+
+	  100% {
+	   -webkit-transform: translateY(0);
+	  }
+	}
+
+	@-webkit-keyframes kfBB3 {
+	  0% {
+	    -webkit-transform: translateY(-2);
+	  }
+
+	  50% {
+	   -webkit-transform: translateY(0);
+	  }
+
+	  100% {
+	   -webkit-transform: translateY(-2);
+	  }
+	}
+
+	.bubbleBounce
+	 {
+	  -webkit-animation-duration: 10s;
+	  -webkit-animation-name: kfBB1;
+	  -webkit-animation-iteration-count: infinite;
+	  -webkit-animation-timing-function:ease-in-out;
+	}
+
+	.bubbleBounce2
+	 {
+	  -webkit-animation-duration: 3s;
+	  -webkit-animation-name: kfBB2;
+	  -webkit-animation-iteration-count: infinite;
+	  -webkit-animation-timing-function:ease-in-out;
+	}
+
+	.bubbleBounce3
+	 {
+	  -webkit-animation-duration: 2s;
+	  -webkit-animation-name: kfBB3;
+	  -webkit-animation-iteration-count: infinite;
+	  -webkit-animation-timing-function:ease-in-out;
+	}
+
+	#sb1 {
+		background-type:box;
+	}
+</style>
+
+</head>
+
+<body>
+
+	<!-- Pop sound: http://soundbible.com/2067-Blop.html -->
+	<audio volume="1" id="pop">
+	  <source src="blop.wav" type="audio/wav" />
+	  Your browser does not support WAV files in the audio element.
+	</audio>
+
+	<!-- scene -->
+	<div id="container">
+		<glam>
+		  <scene>
+			<background id="sb1" class="skybox"></background>
+		  </scene>
+		</glam>
+
+		<p id="gameInfo">
+
+			<span class="info">Bubble Zap by <a href="http://nealshyam.com">@nealrs</a></span>
+
+			<span class="info">
+				<a id="reset" class="reset">reset game</a>
+			</span>
+
+			time left: <span id="countdown" class="info">60</span>
+			score: <span id ="score" class="info">0</span>
+			<span id="win" class="info">&nbsp;</span>
+			<span id="share" class="hidden">&nbsp;</span>
+
+		</p>
+
+	</div>
+
+
+<!-- JS-->
+<script>
+	var pop = null;
+	var s=0; // score
+	var timer = 60; // timer
+
+	function popBubble(scene, elt) {
+			pop.pause();
+			pop.currentTime = 0;
+			pop.play();
+			scene.removeChild(elt);
+
+			s++;
+			document.getElementById("score").innerHTML=s;
+	}
+
+	function createBubble(scene, x, y, z, animClass) {
+		var groupelt = document.createElement('group');
+
+		groupelt.setAttribute('x', x);
+		groupelt.setAttribute('z', z);
+		groupelt.setAttribute('y', y);
+
+		var sphereelt = document.createElement('sphere');
+		sphereelt.setAttribute('class', "bubble skybox " + animClass);
+
+		sphereelt.addEventListener("click", function(event) {
+			popBubble(scene, groupelt);
+		});
+
+		sphereelt.addEventListener("touchend", function(event) {
+			popBubble(scene, groupelt);
+		});
+
+		groupelt.appendChild(sphereelt);
+
+		return groupelt;
+	}
+
+	function addBubbles(scene) {
+
+		pop = document.getElementById("pop");
+
+		var i, len = 50;
+
+		for (i = 0; i < len; i++) {
+
+			var x = -6 + (Math.random() * 12);
+			var y = -6 + (Math.random() * 12);
+			var z = -6 + (Math.random() * 12);
+
+			var animClass = i % 3 ? 'bubbleBounce' : (i % 2 ? 'bubbleBounce2' : 'bubbleBounce3');
+			var groupelt = createBubble(scene, x, y, z, animClass);
+
+			scene.appendChild(groupelt);
+
+		}
+	}
+
+
+	var reset = document.getElementById('reset');
+
+	reset.addEventListener("click", function(event) {
+		location.reload();
+	});
+
+	window.addEventListener('load', function(){
+
+		glam.ready();
+		var scene = document.getElementsByTagName('scene')[0];
+		addBubbles(scene);
+
+		// GAME TIMER
+		// http://stackoverflow.com/questions/9989285/javascript-countdown-timer-and-display-text
+		var interval = setInterval(function() {
+			document.getElementById('countdown').innerHTML = --timer;
+
+			if (timer <= 0){
+				document.getElementById('countdown').innerHTML = 'time\'s up!';
+
+				if (s > 49){
+					document.getElementById("win").className += ' win';
+					document.getElementById("win").textContent = "BAM! YOU WIN!";
+				} else {
+					document.getElementById("win").className += ' lose';
+					document.getElementById("win").textContent = "BLERG. YOU LOSE.";
+				}
+
+				/*
+				document.getElementById("share").className -= ' hidden';
+				document.getElementById("win").textContent = "share your score";
+				*/
+				clearInterval(interval);
+			}
+		}, 1000);
+
+}, false);
+</script>
+
+</body>
+</html>
