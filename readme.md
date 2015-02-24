@@ -6,6 +6,8 @@ Bubble Zap is the first game I've ever built. Basically, you have 60 seconds to 
 
 This game is an adapted version of the [bubble pop! demo](http://tparisi.github.io/glam/demos/bubblepop.html) from [Tony Parisi's glam (GL And Markup) project](https://github.com/tparisi/glam). All I've done is re-skin it and added some game logic, but I'm hella proud of it.
 
+**FYI** I've really only tried this on Chrome and it's bit of a resource hog. I did manage to score a 47 on my iPad though, so it's possible.
+
 I created this game to learn more about glam for Issue 77 of [Git@Me](http://gitat.me).
 
 **Credits:**
