@@ -41,10 +41,11 @@
 		font-family: 'Roboto', sans-serif;
 		color:#FFF;
 		padding:0 1rem;
+		width:100%;
 	}
 
 	.info{
-		margin-right:2rem;
+		margin-right:1.6rem;
 	}
 
 	.win{
@@ -59,10 +60,18 @@
 		display:none;
 	}
 
-	.reset{
+	a.reset{
 		color:#FFDC00;
 		padding:4px 8px;
 		border: 1px solid #FFDC00;
+		cursor: pointer;
+		border-radius:4px;
+	}
+
+	a.share{
+		color:#7FDBFF;
+		padding:4px 8px;
+		border: 1px solid #7FDBFF;
 		cursor: pointer;
 		border-radius:4px;
 	}
@@ -171,7 +180,9 @@
 			time left: <span id="countdown" class="info">60</span>
 			score: <span id ="score" class="info">0</span>
 			<span id="win" class="info">&nbsp;</span>
-			<span id="share" class="hidden">&nbsp;</span>
+			<span id="share" class="hidden">
+				<a id="share" class="share">share score</a>
+			</span>
 
 		</p>
 
@@ -237,11 +248,19 @@
 		}
 	}
 
-
+	// reset & share buttons
 	var reset = document.getElementById('reset');
-
 	reset.addEventListener("click", function(event) {
 		location.reload();
+	});
+
+	var share = document.getElementById('share');
+	share.addEventListener("click", function(event) {
+
+		var msg = "I scored "+s+" points in BubbleZap! "+ document.URL;
+
+		window.open("http://twitter.com/home/?status="+msg+" via @nealrs");
+
 	});
 
 	window.addEventListener('load', function(){
@@ -264,12 +283,11 @@
 				} else {
 					document.getElementById("win").className += ' lose';
 					document.getElementById("win").textContent = "BLERG. YOU LOSE.";
+					document.getElementById("reset").textContent = "play again?";
 				}
 
-				/*
 				document.getElementById("share").className -= ' hidden';
-				document.getElementById("win").textContent = "share your score";
-				*/
+
 				clearInterval(interval);
 			}
 		}, 1000);
