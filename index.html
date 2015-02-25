@@ -21,12 +21,28 @@
 
 	.skybox {
 		/*Skybox from: http://www.redsorceress.com/skybox.html*/
-		cube-image-right:url(right.jpg);
-		cube-image-left:url(left.jpg);
-		cube-image-top:url(top.jpg);
-		cube-image-bottom:url(bottom.jpg);
-		cube-image-front:url(front.jpg);
-		cube-image-back:url(back.jpg);
+		cube-image-right:url(cubemap/alien/right.jpg);
+		cube-image-left:url(cubemap/alien/left.jpg);
+		cube-image-top:url(cubemap/alien/top.jpg);
+		cube-image-bottom:url(cubemap/alien/bottom.jpg);
+		cube-image-front:url(cubemap/alien/front.jpg);
+		cube-image-back:url(cubemap/alien/back.jpg);
+
+		/*cube map from http://aerotwist.com/tutorials/create-your-own-environment-maps/*/
+		/*cube-image-right:url(cubemap/pos-x.png);
+		cube-image-left:url(cubemap/neg-x.png);
+		cube-image-top:url(cubemap/pos-y.png);
+		cube-image-bottom:url(cubemap/neg-y.png);
+		cube-image-front:url(cubemap/pos-z.png);
+		cube-image-back:url(cubemap/neg-z.png);*/
+
+		/*cube map from http://www.humus.name/index.php?page=Textures&ID=124*/
+		/*cube-image-right:url(cubemap/sf/posx.jpg);
+		cube-image-left:url(cubemap/sf/negx.jpg);
+		cube-image-top:url(cubemap/sf/posy.jpg);
+		cube-image-bottom:url(cubemap/sf/negy.jpg);
+		cube-image-front:url(cubemap/sf/posz.jpg);
+		cube-image-back:url(cubemap/sf/negz.jpg);*/
 	}
 
 	.bubble {
@@ -44,21 +60,10 @@
 		width:100%;
 	}
 
-	.info{
-		margin-right:1.6rem;
-	}
-
-	.win{
-		color: #2ECC40;
-	}
-
-	.lose{
-		color: #FF4136;
-	}
-
-	.hidden{
-		display:none;
-	}
+	.info{margin-right:1.6rem;}
+	.win{color: #2ECC40;}
+	.lose{color: #FF4136;}
+	.hidden{display:none;}
 
 	a.reset{
 		color:#FFDC00;
@@ -76,18 +81,24 @@
 		border-radius:4px;
 	}
 
-	a {
-		color:#FFDC00;
-	}
+	a {color:#FFDC00;}
 
 	@-webkit-keyframes kfBB1 {
 	  0% {
 	    -webkit-transform: translateY(-6);
 	  }
 
+		/*25% {
+			-webkit-transform: translateY(-3);
+		}*/
+
 	  50% {
 	   -webkit-transform: translateY(0);
 	  }
+
+		/*75% {
+			-webkit-transform: translateY(-3);
+		}*/
 
 	  100% {
 	   -webkit-transform: translateY(6);
@@ -99,9 +110,17 @@
 	    -webkit-transform: translateY(0);
 	  }
 
+		/*25% {
+			-webkit-transform: translateY(-1);
+		}*/
+
 	  50% {
 	   -webkit-transform: translateY(2);
 	  }
+
+		/*75% {
+			-webkit-transform: translateY(1);
+		}*/
 
 	  100% {
 	   -webkit-transform: translateY(0);
@@ -113,12 +132,20 @@
 	    -webkit-transform: translateY(-2);
 	  }
 
+		/*25% {
+			-webkit-transform: translateY(-1);
+		}*/
+
 	  50% {
 	   -webkit-transform: translateY(0);
 	  }
 
+		/*75% {
+			-webkit-transform: translateY(1);
+		}*/
+
 	  100% {
-	   -webkit-transform: translateY(-2);
+	   -webkit-transform: translateY(2);
 	  }
 	}
 
@@ -132,7 +159,7 @@
 
 	.bubbleBounce2
 	 {
-	  -webkit-animation-duration: 3s;
+	  -webkit-animation-duration: 6s;
 	  -webkit-animation-name: kfBB2;
 	  -webkit-animation-iteration-count: infinite;
 	  -webkit-animation-timing-function:ease-in-out;
@@ -140,17 +167,42 @@
 
 	.bubbleBounce3
 	 {
-	  -webkit-animation-duration: 2s;
+	  -webkit-animation-duration: 4s;
 	  -webkit-animation-name: kfBB3;
 	  -webkit-animation-iteration-count: infinite;
 	  -webkit-animation-timing-function:ease-in-out;
 	}
 
-	#sb1 {
-		background-type:box;
-	}
-</style>
+	#sb1 {background-type:box;}
 
+	.gameText{
+		shader:phong;
+		font-bevel:bevel;
+		bevel-size:.01;
+		bevel-thickness:.01;
+		font-family: 'Roboto', sans-serif;
+		font-size:.2;
+		z-index: 99999;
+	}
+
+	@-webkit-keyframes kfRotateY {
+		from {
+			-webkit-transform: rotateY(0deg);
+		}
+
+		to {
+		-webkit-transform: rotateY(360deg);
+		}
+	}
+
+	.textAnim{
+		-webkit-animation-duration: 5s;
+		-webkit-animation-name: kfRotateY;
+		-webkit-animation-iteration-count: infinite;
+		-webkit-animation-timing-function:linear;
+	}
+
+</style>
 </head>
 
 <body>
@@ -163,28 +215,30 @@
 
 	<!-- scene -->
 	<div id="container">
+		<!-- game controls-->
+		<div id="gameInfo">
+			<p>
+				<span class="info">Bubble Zap! by <a href="http://nealshyam.com">@nealrs</a></span>
+
+				<span class="info">
+					<a id="reset" class="reset">reset game</a>
+				</span>
+
+				<span id="gametime">time left: <span id="countdown" class="info">60</span></span>
+				score: <span id ="score" class="info">0</span>
+				<span id="win" class="info">&nbsp;</span>
+				<span id="share" class="hidden">
+					<a id="share" class="share">share score</a>
+				</span>
+			</p>
+		</div>
+
+
 		<glam>
 		  <scene>
 			<background id="sb1" class="skybox"></background>
 		  </scene>
 		</glam>
-
-		<p id="gameInfo">
-
-			<span class="info">Bubble Zap! by <a href="http://nealshyam.com">@nealrs</a></span>
-
-			<span class="info">
-				<a id="reset" class="reset">reset game</a>
-			</span>
-
-			time left: <span id="countdown" class="info">60</span>
-			score: <span id ="score" class="info">0</span>
-			<span id="win" class="info">&nbsp;</span>
-			<span id="share" class="hidden">
-				<a id="share" class="share">share score</a>
-			</span>
-
-		</p>
 
 	</div>
 
@@ -201,8 +255,10 @@
 			pop.play();
 			scene.removeChild(elt);
 
-			s++;
-			document.getElementById("score").innerHTML=s;
+			if (timer>0){
+				s++;
+				document.getElementById("score").innerHTML=s;
+			}
 	}
 
 	function createBubble(scene, x, y, z, animClass) {
@@ -256,15 +312,11 @@
 
 	var share = document.getElementById('share');
 	share.addEventListener("click", function(event) {
-
 		var msg = "I scored "+s+" points in BubbleZap! "+ document.URL;
-
 		window.open("http://twitter.com/home/?status="+msg+" via @nealrs");
-
 	});
 
 	window.addEventListener('load', function(){
-
 		glam.ready();
 		var scene = document.getElementsByTagName('scene')[0];
 		addBubbles(scene);
@@ -275,25 +327,53 @@
 			document.getElementById('countdown').innerHTML = --timer;
 
 			if (timer <= 0){
-				document.getElementById('countdown').innerHTML = 'time\'s up!';
 
-				if (s > 49){
-					document.getElementById("win").className += ' win';
-					document.getElementById("win").textContent = "BAM! YOU WIN!";
-				} else {
+				endGame();
+
+				if (s < 50){
 					document.getElementById("win").className += ' lose';
 					document.getElementById("win").textContent = "BLERG. YOU LOSE.";
 					document.getElementById("reset").textContent = "play again?";
-				}
 
-				document.getElementById("share").className -= ' hidden';
+					var l = document.createElement("text");
+					l.setAttribute("id", "loseText");
+					l.setAttribute("class", "textAnim gameText lose");
+					l.innerHTML = "G A M E  O V E R"
+					document.getElementById('sb1').appendChild(l);
+				}
+				clearInterval(interval);
+			}
+
+			if (s > 49){
+				document.getElementById("win").className += ' win';
+				document.getElementById("win").textContent = "BAM! YOU WIN!";
+				s += timer;
+				document.getElementById("score").innerHTML=s;
+				timer=0;
+
+				var w = document.createElement("text");
+				w.setAttribute("id", "winText");
+				w.setAttribute("class", "textAnim gameText win");
+				w.innerHTML = "Y O U  W I N"
+				document.getElementById('sb1').appendChild(w);
+
+				endGame();
 
 				clearInterval(interval);
+			}
+
+			if (timer <= 10){
+				document.getElementById("gametime").className += ' lose';
 			}
 		}, 1000);
 
 }, false);
-</script>
 
+function endGame(){
+	document.getElementById('countdown').innerHTML = '0';
+	document.getElementById("share").className -= 'hidden';
+	document.getElementById("gametime").className -= ' lose';
+}
+</script>
 </body>
 </html>
