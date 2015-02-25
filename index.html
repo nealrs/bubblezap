@@ -5,7 +5,7 @@
 <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
 <script src="glam.min.js" ></script>
 
-<title>Bubble Zap! &middot; Neal Shyam</title>
+<title>BubbleZap 3D &middot; Neal Shyam</title>
 
 <style>
 	body{
@@ -60,7 +60,7 @@
 		width:100%;
 	}
 
-	.info{margin-right:1.6rem;}
+	.info{margin-right:1rem;}
 	.win{color: #2ECC40;}
 	.lose{color: #FF4136;}
 	.hidden{display:none;}
@@ -81,7 +81,18 @@
 		border-radius:4px;
 	}
 
-	a {color:#FFDC00;}
+	a.about{
+		color:#AAAAAA;
+		padding:4px 8px;
+		border: 1px solid #DDDDDD;
+		cursor: pointer;
+		border-radius:4px;
+	}
+
+	a {
+		color:#FFDC00;
+		text-decoration:none;
+	}
 
 	@-webkit-keyframes kfBB1 {
 	  0% {
@@ -217,7 +228,13 @@
 		<!-- game controls-->
 		<div id="gameInfo">
 			<p>
-				<span class="info">Bubble Zap! by <a href="http://nealshyam.com">@nealrs</a></span>
+				<span class="info">
+					BubbleZap 3D by <a href="http://nealshyam.com">@nealrs</a>
+				</span>
+
+				<span class="info">
+					<a id="about" class="about" href="https://github.com/nealrs/bubblezap/">about</a>
+				</span>
 
 				<span class="info">
 					<a id="reset" class="reset">reset game</a>
@@ -311,8 +328,8 @@
 
 	var share = document.getElementById('share');
 	share.addEventListener("click", function(event) {
-		var msg = "I scored "+s+" points in BubbleZap! "+ document.URL;
-		window.open("http://twitter.com/home/?status="+msg+" via @nealrs");
+		var msg = "I scored "+s+" points in BubbleZap3D! http://nealrs.github.io/bubblezap";
+		window.open("http://twitter.com/home/?status="+msg);
 	});
 
 	window.addEventListener('load', function(){
@@ -346,6 +363,7 @@
 			if (s > 49){
 				document.getElementById("win").className += ' win';
 				document.getElementById("win").textContent = "BAM! YOU WIN!";
+				document.getElementById("reset").textContent = "play again?";
 				s += timer;
 				document.getElementById("score").innerHTML=s;
 				timer=0;
